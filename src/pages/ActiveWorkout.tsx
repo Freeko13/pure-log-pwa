@@ -381,6 +381,7 @@ function ExpandedExercise({
   onSelectSuggestion,
   onToggleGravitron,
   onDeleteExercise,
+  onReplace,
   onAddSet,
   onUpdateSet,
   onDeleteSet,
@@ -396,6 +397,7 @@ function ExpandedExercise({
   onSelectSuggestion: (name: string) => void;
   onToggleGravitron: () => void;
   onDeleteExercise: () => void;
+  onReplace: () => void;
   onAddSet: () => void;
   onUpdateSet: (setId: string, field: "weight" | "reps", value: number) => void;
   onDeleteSet: (setId: string) => void;

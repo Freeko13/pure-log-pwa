@@ -310,11 +310,13 @@ function CompactExercise({
   pr,
   onExpand,
   onDelete,
+  onReplace,
 }: {
   ex: Exercise;
   pr: { weight: number; reps: number; isGravitron: boolean; allSets: { weight: number; reps: number }[] };
   onExpand: () => void;
   onDelete: () => void;
+  onReplace: () => void;
 }) {
   return (
     <div className="p-4 flex items-start gap-3 cursor-pointer" onClick={onExpand}>
@@ -331,7 +333,7 @@ function CompactExercise({
         {/* Compact sets display */}
         {ex.sets.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-1.5">
-            {ex.sets.map((s, i) => (
+            {ex.sets.map((s) => (
               <span
                 key={s.id}
                 className="text-xs bg-secondary/70 text-muted-foreground rounded-md px-2 py-0.5 font-medium"
@@ -347,13 +349,21 @@ function CompactExercise({
         <button
           onClick={(e) => {
             e.stopPropagation();
+            onReplace();
+          }}
+          className="gym-touch flex items-center justify-center text-muted-foreground/40 p-1"
+        >
+          <ArrowLeftRight className="w-4 h-4" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
             onDelete();
           }}
           className="gym-touch flex items-center justify-center text-muted-foreground/40 p-1"
         >
           <Trash2 className="w-4 h-4" />
         </button>
-        <ChevronDown className="w-4 h-4 text-muted-foreground/50" />
       </div>
     </div>
   );

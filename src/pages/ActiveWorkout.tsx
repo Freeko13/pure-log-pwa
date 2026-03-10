@@ -257,6 +257,7 @@ export default function ActiveWorkout() {
                     }
                     onToggleGravitron={() => toggleGravitron(ex.id)}
                     onDeleteExercise={() => deleteExercise(ex.id)}
+                    onReplace={() => setReplaceSheetExId(ex.id)}
                     onAddSet={() => addSet(ex.id)}
                     onUpdateSet={(setId, field, value) =>
                       updateSet(ex.id, setId, field, value)
@@ -271,6 +272,7 @@ export default function ActiveWorkout() {
                     pr={pr}
                     onExpand={() => setExpandedExercise(ex.id)}
                     onDelete={() => deleteExercise(ex.id)}
+                    onReplace={() => setReplaceSheetExId(ex.id)}
                   />
                 )}
               </motion.div>

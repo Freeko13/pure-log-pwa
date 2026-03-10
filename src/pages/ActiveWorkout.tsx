@@ -434,10 +434,10 @@ function ExpandedExercise({
             )}
           </div>
           <button
-            onClick={onCollapse}
+            onClick={onReplace}
             className="gym-touch flex items-center justify-center text-muted-foreground"
           >
-            <ChevronDown className="w-5 h-5 rotate-180" />
+            <ArrowLeftRight className="w-5 h-5" />
           </button>
           <button
             onClick={onDeleteExercise}

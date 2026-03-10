@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
+  base: '/pure-log-pwa/',  // <- обязательно слеши в начале и конце
   plugins: [
     react(),
     mode === "development" && componentTagger(),

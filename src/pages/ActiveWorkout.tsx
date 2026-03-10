@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Plus, X, Trophy, Trash2, ChevronDown } from "lucide-react";
+import { Plus, X, Trophy, Trash2, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,6 +16,12 @@ import {
 import { Workout, Exercise, WorkoutSet } from "@/types/workout";
 import { SwipeToDelete } from "@/components/SwipeToDelete";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 export default function ActiveWorkout() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +32,7 @@ export default function ActiveWorkout() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeInput, setActiveInput] = useState<string | null>(null);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+  const [replaceSheetExId, setReplaceSheetExId] = useState<string | null>(null);
 
   useEffect(() => {
     setKnownExercises(getExerciseNames());
@@ -177,6 +184,17 @@ export default function ActiveWorkout() {
     if (expandedExercise === exId) setExpandedExercise(null);
   };
 
+  const replaceExercise = (exId: string, newName: string) => {
+    if (!workout) return;
+    const isGravitron = getExerciseIsGravitron(newName);
+    const prefilled = prefillSetsFromPR(newName);
+    const exercises = workout.exercises.map((e) =>
+      e.id === exId ? { ...e, name: newName, isGravitron, sets: prefilled } : e
+    );
+    save({ ...workout, exercises });
+    setReplaceSheetExId(null);
+  };
+
   if (!workout) return null;
 
   const isExpanded = (exId: string) => expandedExercise === exId;
@@ -239,6 +257,7 @@ export default function ActiveWorkout() {
                     }
                     onToggleGravitron={() => toggleGravitron(ex.id)}
                     onDeleteExercise={() => deleteExercise(ex.id)}
+                    onReplace={() => setReplaceSheetExId(ex.id)}
                     onAddSet={() => addSet(ex.id)}
                     onUpdateSet={(setId, field, value) =>
                       updateSet(ex.id, setId, field, value)
@@ -253,6 +272,7 @@ export default function ActiveWorkout() {
                     pr={pr}
                     onExpand={() => setExpandedExercise(ex.id)}
                     onDelete={() => deleteExercise(ex.id)}
+                    onReplace={() => setReplaceSheetExId(ex.id)}
                   />
                 )}
               </motion.div>
@@ -270,6 +290,16 @@ export default function ActiveWorkout() {
           Добавить упражнение
         </Button>
       </div>
+
+      {/* Replace exercise sheet */}
+      <ReplaceExerciseSheet
+        open={replaceSheetExId !== null}
+        onOpenChange={(open) => !open && setReplaceSheetExId(null)}
+        currentExerciseName={
+          workout.exercises.find((e) => e.id === replaceSheetExId)?.name || ""
+        }
+        onSelect={(name) => replaceExercise(replaceSheetExId!, name)}
+      />
     </div>
   );
 }
@@ -280,11 +310,13 @@ function CompactExercise({
   pr,
   onExpand,
   onDelete,
+  onReplace,
 }: {
   ex: Exercise;
   pr: { weight: number; reps: number; isGravitron: boolean; allSets: { weight: number; reps: number }[] };
   onExpand: () => void;
   onDelete: () => void;
+  onReplace: () => void;
 }) {
   return (
     <div className="p-4 flex items-start gap-3 cursor-pointer" onClick={onExpand}>
@@ -301,7 +333,7 @@ function CompactExercise({
         {/* Compact sets display */}
         {ex.sets.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-1.5">
-            {ex.sets.map((s, i) => (
+            {ex.sets.map((s) => (
               <span
                 key={s.id}
                 className="text-xs bg-secondary/70 text-muted-foreground rounded-md px-2 py-0.5 font-medium"
@@ -317,13 +349,21 @@ function CompactExercise({
         <button
           onClick={(e) => {
             e.stopPropagation();
+            onReplace();
+          }}
+          className="gym-touch flex items-center justify-center text-muted-foreground/40 p-1"
+        >
+          <ArrowLeftRight className="w-4 h-4" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
             onDelete();
           }}
           className="gym-touch flex items-center justify-center text-muted-foreground/40 p-1"
         >
           <Trash2 className="w-4 h-4" />
         </button>
-        <ChevronDown className="w-4 h-4 text-muted-foreground/50" />
       </div>
     </div>
   );
@@ -341,6 +381,7 @@ function ExpandedExercise({
   onSelectSuggestion,
   onToggleGravitron,
   onDeleteExercise,
+  onReplace,
   onAddSet,
   onUpdateSet,
   onDeleteSet,
@@ -356,6 +397,7 @@ function ExpandedExercise({
   onSelectSuggestion: (name: string) => void;
   onToggleGravitron: () => void;
   onDeleteExercise: () => void;
+  onReplace: () => void;
   onAddSet: () => void;
   onUpdateSet: (setId: string, field: "weight" | "reps", value: number) => void;
   onDeleteSet: (setId: string) => void;
@@ -392,10 +434,10 @@ function ExpandedExercise({
             )}
           </div>
           <button
-            onClick={onCollapse}
+            onClick={onReplace}
             className="gym-touch flex items-center justify-center text-muted-foreground"
           >
-            <ChevronDown className="w-5 h-5 rotate-180" />
+            <ArrowLeftRight className="w-5 h-5" />
           </button>
           <button
             onClick={onDeleteExercise}
@@ -504,5 +546,72 @@ function ExpandedExercise({
         </button>
       </div>
     </>
+  );
+}
+
+/* ===== Replace Exercise Sheet ===== */
+function ReplaceExerciseSheet({
+  open,
+  onOpenChange,
+  currentExerciseName,
+  onSelect,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  currentExerciseName: string;
+  onSelect: (name: string) => void;
+}) {
+  const allNames = getExerciseNames().filter(
+    (n) => n.toLowerCase() !== currentExerciseName.toLowerCase()
+  );
+  const [search, setSearch] = useState("");
+  const filtered = search
+    ? allNames.filter((n) => n.toLowerCase().includes(search.toLowerCase()))
+    : allNames;
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl px-0">
+        <SheetHeader className="px-5 pb-3">
+          <SheetTitle>Заменить упражнение</SheetTitle>
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Поиск..."
+            className="mt-2 h-11 rounded-xl bg-secondary/50 border-none"
+          />
+        </SheetHeader>
+        <div className="overflow-y-auto flex-1 px-2">
+          {filtered.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              Упражнения не найдены
+            </p>
+          )}
+          {filtered.map((name) => {
+            const pr = getExercisePR(name);
+            return (
+              <button
+                key={name}
+                onClick={() => onSelect(name)}
+                className="w-full text-left px-4 py-3.5 rounded-xl hover:bg-secondary/50 active:bg-secondary transition-colors flex items-center justify-between gap-3"
+              >
+                <span className="text-sm font-medium capitalize truncate">
+                  {name}
+                </span>
+                {pr.weight > 0 && (
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Trophy className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {pr.isGravitron ? "-" : ""}
+                      {pr.weight}×{pr.reps}
+                    </span>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

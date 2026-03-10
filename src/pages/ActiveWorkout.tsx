@@ -548,3 +548,70 @@ function ExpandedExercise({
     </>
   );
 }
+
+/* ===== Replace Exercise Sheet ===== */
+function ReplaceExerciseSheet({
+  open,
+  onOpenChange,
+  currentExerciseName,
+  onSelect,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  currentExerciseName: string;
+  onSelect: (name: string) => void;
+}) {
+  const allNames = getExerciseNames().filter(
+    (n) => n.toLowerCase() !== currentExerciseName.toLowerCase()
+  );
+  const [search, setSearch] = useState("");
+  const filtered = search
+    ? allNames.filter((n) => n.toLowerCase().includes(search.toLowerCase()))
+    : allNames;
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl px-0">
+        <SheetHeader className="px-5 pb-3">
+          <SheetTitle>Заменить упражнение</SheetTitle>
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Поиск..."
+            className="mt-2 h-11 rounded-xl bg-secondary/50 border-none"
+          />
+        </SheetHeader>
+        <div className="overflow-y-auto flex-1 px-2">
+          {filtered.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              Упражнения не найдены
+            </p>
+          )}
+          {filtered.map((name) => {
+            const pr = getExercisePR(name);
+            return (
+              <button
+                key={name}
+                onClick={() => onSelect(name)}
+                className="w-full text-left px-4 py-3.5 rounded-xl hover:bg-secondary/50 active:bg-secondary transition-colors flex items-center justify-between gap-3"
+              >
+                <span className="text-sm font-medium capitalize truncate">
+                  {name}
+                </span>
+                {pr.weight > 0 && (
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Trophy className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {pr.isGravitron ? "-" : ""}
+                      {pr.weight}×{pr.reps}
+                    </span>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}

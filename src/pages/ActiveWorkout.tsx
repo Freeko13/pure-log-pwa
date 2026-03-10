@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Plus, X, Trophy, Trash2, ArrowLeftRight } from "lucide-react";
+import { Plus, X, Trophy, Trash2, ArrowLeftRight, GripVertical, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,7 +15,7 @@ import {
 } from "@/lib/storage";
 import { Workout, Exercise, WorkoutSet } from "@/types/workout";
 import { SwipeToDelete } from "@/components/SwipeToDelete";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Reorder } from "framer-motion";
 import {
   Sheet,
   SheetContent,

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Plus, X, Trophy, Trash2, ChevronDown } from "lucide-react";
+import { Plus, X, Trophy, Trash2, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,6 +16,12 @@ import {
 import { Workout, Exercise, WorkoutSet } from "@/types/workout";
 import { SwipeToDelete } from "@/components/SwipeToDelete";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 export default function ActiveWorkout() {
   const { id } = useParams<{ id: string }>();

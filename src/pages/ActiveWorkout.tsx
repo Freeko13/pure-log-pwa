@@ -290,6 +290,16 @@ export default function ActiveWorkout() {
           Добавить упражнение
         </Button>
       </div>
+
+      {/* Replace exercise sheet */}
+      <ReplaceExerciseSheet
+        open={replaceSheetExId !== null}
+        onOpenChange={(open) => !open && setReplaceSheetExId(null)}
+        currentExerciseName={
+          workout.exercises.find((e) => e.id === replaceSheetExId)?.name || ""
+        }
+        onSelect={(name) => replaceExercise(replaceSheetExId!, name)}
+      />
     </div>
   );
 }

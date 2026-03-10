@@ -1,18 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { toast } from "sonner";
 
 export function usePwaUpdate() {
+  const checkedOnLaunch = useRef(false);
+
   const {
     needRefresh: [needRefresh],
     updateServiceWorker,
   } = useRegisterSW({
-    onRegisteredSW(swUrl, registration) {
-      // Check for updates every 30 seconds
-      if (registration) {
-        setInterval(() => {
-          registration.update();
-        }, 30 * 1000);
+    onRegisteredSW(_swUrl, registration) {
+      // Single update check on launch
+      if (registration && !checkedOnLaunch.current) {
+        checkedOnLaunch.current = true;
+        registration.update();
       }
     },
     onRegisterError(error) {
@@ -22,7 +23,6 @@ export function usePwaUpdate() {
 
   useEffect(() => {
     if (needRefresh) {
-      // Auto-update immediately — localStorage data is preserved
       toast("Обновление приложения...", { duration: 2000 });
       setTimeout(() => {
         updateServiceWorker(true);

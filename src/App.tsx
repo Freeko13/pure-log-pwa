@@ -18,7 +18,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/pure-log-pwa">
         <div className="max-w-md mx-auto min-h-screen relative">
           <Routes>
             <Route path="/" element={<Index />} />

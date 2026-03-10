@@ -197,6 +197,36 @@ export default function ActiveWorkout() {
     setReplaceSheetExId(null);
   };
 
+  const handleReorder = (newOrder: Exercise[]) => {
+    if (!workout) return;
+    const updated = { ...workout, exercises: newOrder };
+    setWorkout(updated);
+    if (isNew) {
+      addWorkout(updated);
+      setIsNew(false);
+    } else {
+      updateWorkout(updated);
+    }
+  };
+
+  const handleLongPressStart = useCallback(() => {
+    longPressTriggered.current = false;
+    longPressTimer.current = setTimeout(() => {
+      longPressTriggered.current = true;
+      setReorderMode(true);
+      setExpandedExercise(null);
+      // Vibrate if supported
+      if (navigator.vibrate) navigator.vibrate(30);
+    }, 500);
+  }, []);
+
+  const handleLongPressEnd = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }, []);
+
   if (!workout) return null;
 
   const isExpanded = (exId: string) => expandedExercise === exId;

@@ -32,6 +32,7 @@ export default function ActiveWorkout() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeInput, setActiveInput] = useState<string | null>(null);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
+  const [replaceSheetExId, setReplaceSheetExId] = useState<string | null>(null);
 
   useEffect(() => {
     setKnownExercises(getExerciseNames());

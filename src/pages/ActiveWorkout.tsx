@@ -33,7 +33,9 @@ export default function ActiveWorkout() {
   const [activeInput, setActiveInput] = useState<string | null>(null);
   const [expandedExercise, setExpandedExercise] = useState<string | null>(null);
   const [replaceSheetExId, setReplaceSheetExId] = useState<string | null>(null);
-
+  const [reorderMode, setReorderMode] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressTriggered = useRef(false);
   useEffect(() => {
     setKnownExercises(getExerciseNames());
     const existing = getWorkouts().find((w) => w.id === id);

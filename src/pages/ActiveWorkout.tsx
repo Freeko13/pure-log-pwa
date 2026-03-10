@@ -379,9 +379,6 @@ export default function ActiveWorkout() {
             })}
           </AnimatePresence>
         )}
-            );
-          })}
-        </AnimatePresence>
 
         {/* Add exercise */}
         <Button

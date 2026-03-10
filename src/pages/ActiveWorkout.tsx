@@ -184,6 +184,17 @@ export default function ActiveWorkout() {
     if (expandedExercise === exId) setExpandedExercise(null);
   };
 
+  const replaceExercise = (exId: string, newName: string) => {
+    if (!workout) return;
+    const isGravitron = getExerciseIsGravitron(newName);
+    const prefilled = prefillSetsFromPR(newName);
+    const exercises = workout.exercises.map((e) =>
+      e.id === exId ? { ...e, name: newName, isGravitron, sets: prefilled } : e
+    );
+    save({ ...workout, exercises });
+    setReplaceSheetExId(null);
+  };
+
   if (!workout) return null;
 
   const isExpanded = (exId: string) => expandedExercise === exId;

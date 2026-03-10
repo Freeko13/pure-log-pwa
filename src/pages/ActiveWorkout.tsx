@@ -251,63 +251,134 @@ export default function ActiveWorkout() {
         </div>
       </div>
 
-      {/* Exercises */}
-      <div className="px-5 pt-4 space-y-3">
-        <AnimatePresence>
-          {workout.exercises.map((ex) => {
-            const pr = ex.name
-              ? getExercisePR(ex.name)
-              : { weight: 0, reps: 0, isGravitron: false, allSets: [] };
-            const expanded = isExpanded(ex.id);
+      {/* Reorder mode banner */}
+      {reorderMode && (
+        <div className="px-5 pt-4 pb-1 flex items-center justify-between">
+          <span className="text-sm font-medium text-muted-foreground">
+            Перетащите для изменения порядка
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setReorderMode(false)}
+            className="gap-1.5 text-primary"
+          >
+            <Check className="w-4 h-4" />
+            Готово
+          </Button>
+        </div>
+      )}
 
-            return (
-              <motion.div
-                key={ex.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -200 }}
-                className="bg-card rounded-2xl border border-border overflow-hidden"
-              >
-                {expanded ? (
-                  /* ===== EXPANDED VIEW ===== */
-                  <ExpandedExercise
-                    ex={ex}
-                    pr={pr}
-                    activeInput={activeInput}
-                    suggestions={suggestions}
-                    onNameChange={(name) => updateExerciseName(ex.id, name)}
-                    onFocus={() => setActiveInput(ex.id)}
-                    onBlur={() =>
-                      setTimeout(() => {
-                        setActiveInput(null);
-                        setSuggestions([]);
-                      }, 200)
-                    }
-                    onSelectSuggestion={(name) =>
-                      selectSuggestion(ex.id, name)
-                    }
-                    onToggleGravitron={() => toggleGravitron(ex.id)}
-                    onDeleteExercise={() => deleteExercise(ex.id)}
-                    onReplace={() => setReplaceSheetExId(ex.id)}
-                    onAddSet={() => addSet(ex.id)}
-                    onUpdateSet={(setId, field, value) =>
-                      updateSet(ex.id, setId, field, value)
-                    }
-                    onDeleteSet={(setId) => deleteSet(ex.id, setId)}
-                    onCollapse={() => setExpandedExercise(null)}
-                  />
-                ) : (
-                  /* ===== COMPACT VIEW ===== */
-                  <CompactExercise
-                    ex={ex}
-                    pr={pr}
-                    onExpand={() => setExpandedExercise(ex.id)}
-                    onDelete={() => deleteExercise(ex.id)}
-                    onReplace={() => setReplaceSheetExId(ex.id)}
-                  />
-                )}
-              </motion.div>
+      {/* Exercises */}
+      <div className={`px-5 ${reorderMode ? "pt-1" : "pt-4"} space-y-3`}>
+        {reorderMode ? (
+          <Reorder.Group
+            axis="y"
+            values={workout.exercises}
+            onReorder={handleReorder}
+            className="space-y-3"
+          >
+            {workout.exercises.map((ex) => {
+              const pr = ex.name
+                ? getExercisePR(ex.name)
+                : { weight: 0, reps: 0, isGravitron: false, allSets: [] };
+              return (
+                <Reorder.Item
+                  key={ex.id}
+                  value={ex}
+                  className="bg-card rounded-2xl border border-border overflow-hidden cursor-grab active:cursor-grabbing"
+                  whileDrag={{ scale: 1.03, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
+                >
+                  <div className="p-4 flex items-center gap-3">
+                    <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-semibold truncate block">
+                        {ex.name || "Без названия"}
+                      </span>
+                      {ex.sets.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-1">
+                          {ex.sets.map((s) => (
+                            <span
+                              key={s.id}
+                              className="text-xs bg-secondary/70 text-muted-foreground rounded-md px-2 py-0.5 font-medium"
+                            >
+                              {ex.isGravitron ? "-" : ""}{s.weight}×{s.reps}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    {pr.weight > 0 && (
+                      <Trophy className="w-3.5 h-3.5 text-accent shrink-0" />
+                    )}
+                  </div>
+                </Reorder.Item>
+              );
+            })}
+          </Reorder.Group>
+        ) : (
+          <AnimatePresence>
+            {workout.exercises.map((ex) => {
+              const pr = ex.name
+                ? getExercisePR(ex.name)
+                : { weight: 0, reps: 0, isGravitron: false, allSets: [] };
+              const expanded = isExpanded(ex.id);
+
+              return (
+                <motion.div
+                  key={ex.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -200 }}
+                  className="bg-card rounded-2xl border border-border overflow-hidden"
+                  onTouchStart={handleLongPressStart}
+                  onTouchEnd={handleLongPressEnd}
+                  onTouchMove={handleLongPressEnd}
+                >
+                  {expanded ? (
+                    <ExpandedExercise
+                      ex={ex}
+                      pr={pr}
+                      activeInput={activeInput}
+                      suggestions={suggestions}
+                      onNameChange={(name) => updateExerciseName(ex.id, name)}
+                      onFocus={() => setActiveInput(ex.id)}
+                      onBlur={() =>
+                        setTimeout(() => {
+                          setActiveInput(null);
+                          setSuggestions([]);
+                        }, 200)
+                      }
+                      onSelectSuggestion={(name) =>
+                        selectSuggestion(ex.id, name)
+                      }
+                      onToggleGravitron={() => toggleGravitron(ex.id)}
+                      onDeleteExercise={() => deleteExercise(ex.id)}
+                      onReplace={() => setReplaceSheetExId(ex.id)}
+                      onAddSet={() => addSet(ex.id)}
+                      onUpdateSet={(setId, field, value) =>
+                        updateSet(ex.id, setId, field, value)
+                      }
+                      onDeleteSet={(setId) => deleteSet(ex.id, setId)}
+                      onCollapse={() => setExpandedExercise(null)}
+                    />
+                  ) : (
+                    <CompactExercise
+                      ex={ex}
+                      pr={pr}
+                      onExpand={() => {
+                        if (!longPressTriggered.current) setExpandedExercise(ex.id);
+                      }}
+                      onDelete={() => deleteExercise(ex.id)}
+                      onReplace={() => setReplaceSheetExId(ex.id)}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        )}
             );
           })}
         </AnimatePresence>

@@ -249,7 +249,7 @@ export default function ActiveWorkout() {
       </div>
 
       {/* Exercises */}
-      <div className={`px-5 ${reorderMode ? "pt-1 pb-20" : "pt-4"} space-y-3`}>
+      <div className={`px-5 pt-4 ${reorderMode ? "pb-20" : ""} space-y-3`}>
         {reorderMode ? (
           <Reorder.Group
             axis="y"

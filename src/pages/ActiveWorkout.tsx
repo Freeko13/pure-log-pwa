@@ -15,7 +15,7 @@ import {
 } from "@/lib/storage";
 import { Workout, Exercise, WorkoutSet } from "@/types/workout";
 import { SwipeToDelete } from "@/components/SwipeToDelete";
-import { motion, AnimatePresence, Reorder } from "framer-motion";
+import { motion, AnimatePresence, Reorder, useDragControls } from "framer-motion";
 import {
   Sheet,
   SheetContent,

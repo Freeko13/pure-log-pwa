@@ -41,10 +41,7 @@ export default function ActiveWorkout() {
     const existing = getWorkouts().find((w) => w.id === id);
     if (existing) {
       setWorkout(existing);
-      // Expand last exercise by default
-      if (existing.exercises.length > 0) {
-        setExpandedExercise(existing.exercises[existing.exercises.length - 1].id);
-      }
+      // All exercises start collapsed
     } else {
       const newWorkout: Workout = {
         id: id || generateId(),

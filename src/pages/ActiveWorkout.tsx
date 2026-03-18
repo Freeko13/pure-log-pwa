@@ -258,7 +258,7 @@ export default function ActiveWorkout() {
       )}
 
       {/* Exercises */}
-      <div className={`px-5 ${reorderMode ? "pt-1" : "pt-4"} space-y-3`}>
+      <div className={`px-5 ${reorderMode ? "pt-1 pb-20" : "pt-4"} space-y-3`}>
         {reorderMode ? (
           <Reorder.Group
             axis="y"
@@ -274,11 +274,19 @@ export default function ActiveWorkout() {
                 <Reorder.Item
                   key={ex.id}
                   value={ex}
-                  className="bg-card rounded-2xl border border-border overflow-hidden cursor-grab active:cursor-grabbing"
+                  className="bg-card rounded-2xl border border-border overflow-hidden"
+                  dragListener={false}
                   whileDrag={{ scale: 1.03, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
                 >
                   <div className="p-4 flex items-center gap-3">
-                    <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+                    <Reorder.Item
+                      as="div"
+                      value={ex}
+                      className="cursor-grab active:cursor-grabbing touch-none"
+                      style={{ padding: 0, margin: 0, border: 'none', background: 'none' }}
+                    >
+                      <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+                    </Reorder.Item>
                     <div className="flex-1 min-w-0">
                       <span className="text-sm font-semibold truncate block">
                         {ex.name || "Без названия"}
@@ -368,16 +376,31 @@ export default function ActiveWorkout() {
           </AnimatePresence>
         )}
 
-        {/* Add exercise */}
-        <Button
-          onClick={addExercise}
-          variant="outline"
-          className="w-full h-14 rounded-2xl text-base font-semibold border-dashed border-2 gap-2"
-        >
-          <Plus className="w-5 h-5" />
-          Добавить упражнение
-        </Button>
+        {/* Add exercise - hidden in reorder mode */}
+        {!reorderMode && (
+          <Button
+            onClick={addExercise}
+            variant="outline"
+            className="w-full h-14 rounded-2xl text-base font-semibold border-dashed border-2 gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            Добавить упражнение
+          </Button>
+        )}
       </div>
+
+      {/* Floating Done button in reorder mode */}
+      {reorderMode && (
+        <div className="fixed bottom-6 left-0 right-0 z-50 px-5 safe-bottom">
+          <Button
+            onClick={() => setReorderMode(false)}
+            className="w-full h-14 rounded-2xl text-base font-semibold gap-2 shadow-lg"
+          >
+            <Check className="w-5 h-5" />
+            Готово
+          </Button>
+        </div>
+      )}
 
       {/* Replace exercise sheet */}
       <ReplaceExerciseSheet

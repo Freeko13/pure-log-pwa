@@ -229,7 +229,7 @@ export default function ActiveWorkout() {
   const isExpanded = (exId: string) => expandedExercise === exId;
 
   return (
-    <div className="min-h-screen pb-8 safe-top">
+    <div className="min-h-screen pb-8">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-lg border-b border-border px-5 pt-[max(env(safe-area-inset-top),12px)] pb-3">
         <div className="flex items-center justify-between">
@@ -247,15 +247,6 @@ export default function ActiveWorkout() {
           </button>
         </div>
       </div>
-
-      {/* Reorder mode banner */}
-      {reorderMode && (
-        <div className="px-5 pt-4 pb-1">
-          <span className="text-sm font-medium text-muted-foreground">
-            Перетащите для изменения порядка
-          </span>
-        </div>
-      )}
 
       {/* Exercises */}
       <div className={`px-5 ${reorderMode ? "pt-1 pb-20" : "pt-4"} space-y-3`}>

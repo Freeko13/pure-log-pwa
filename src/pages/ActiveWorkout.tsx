@@ -266,51 +266,9 @@ export default function ActiveWorkout() {
             onReorder={handleReorder}
             className="space-y-3"
           >
-            {workout.exercises.map((ex) => {
-              const pr = ex.name
-                ? getExercisePR(ex.name)
-                : { weight: 0, reps: 0, isGravitron: false, allSets: [] };
-              return (
-                <Reorder.Item
-                  key={ex.id}
-                  value={ex}
-                  className="bg-card rounded-2xl border border-border overflow-hidden"
-                  dragListener={false}
-                  whileDrag={{ scale: 1.03, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
-                >
-                  <div className="p-4 flex items-center gap-3">
-                    <Reorder.Item
-                      as="div"
-                      value={ex}
-                      className="cursor-grab active:cursor-grabbing touch-none"
-                      style={{ padding: 0, margin: 0, border: 'none', background: 'none' }}
-                    >
-                      <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
-                    </Reorder.Item>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm font-semibold truncate block">
-                        {ex.name || "Без названия"}
-                      </span>
-                      {ex.sets.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-1">
-                          {ex.sets.map((s) => (
-                            <span
-                              key={s.id}
-                              className="text-xs bg-secondary/70 text-muted-foreground rounded-md px-2 py-0.5 font-medium"
-                            >
-                              {ex.isGravitron ? "-" : ""}{s.weight}×{s.reps}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    {pr.weight > 0 && (
-                      <Trophy className="w-3.5 h-3.5 text-accent shrink-0" />
-                    )}
-                  </div>
-                </Reorder.Item>
-              );
-            })}
+            {workout.exercises.map((ex) => (
+              <DraggableExerciseItem key={ex.id} ex={ex} />
+            ))}
           </Reorder.Group>
         ) : (
           <AnimatePresence>

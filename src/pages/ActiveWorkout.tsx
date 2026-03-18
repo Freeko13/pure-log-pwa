@@ -250,19 +250,10 @@ export default function ActiveWorkout() {
 
       {/* Reorder mode banner */}
       {reorderMode && (
-        <div className="px-5 pt-4 pb-1 flex items-center justify-between">
+        <div className="px-5 pt-4 pb-1">
           <span className="text-sm font-medium text-muted-foreground">
             Перетащите для изменения порядка
           </span>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => setReorderMode(false)}
-            className="gap-1.5 text-primary"
-          >
-            <Check className="w-4 h-4" />
-            Готово
-          </Button>
         </div>
       )}
 

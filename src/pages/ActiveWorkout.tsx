@@ -702,7 +702,7 @@ function ReplaceExerciseSheet({
                 onClick={() => onSelect(name)}
                 className="w-full text-left px-4 py-3.5 rounded-xl hover:bg-secondary/50 active:bg-secondary transition-colors flex items-center justify-between gap-3"
               >
-                <span className="text-sm font-medium capitalize truncate">
+                <span className="text-sm font-medium capitalize break-words flex-1 min-w-0">
                   {name}
                 </span>
                 {pr.weight > 0 && (

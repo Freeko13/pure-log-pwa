@@ -678,8 +678,8 @@ function ReplaceExerciseSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl px-0">
-        <SheetHeader className="px-5 pb-3">
+      <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl px-0 flex flex-col">
+        <SheetHeader className="px-5 pb-3 shrink-0">
           <SheetTitle>Заменить упражнение</SheetTitle>
           <Input
             value={search}
@@ -688,7 +688,7 @@ function ReplaceExerciseSheet({
             className="mt-2 h-11 rounded-xl bg-secondary/50 border-none"
           />
         </SheetHeader>
-        <div className="overflow-y-auto flex-1 px-2">
+        <div className="overflow-y-auto flex-1 min-h-0 px-2 pb-4">
           {filtered.length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-8">
               Упражнения не найдены

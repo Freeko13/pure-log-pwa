@@ -722,3 +722,39 @@ function ReplaceExerciseSheet({
     </Sheet>
   );
 }
+
+/* ===== Auto-resizing textarea ===== */
+function AutoResizeTextarea({
+  value,
+  onChange,
+  className,
+  ...props
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  className?: string;
+  placeholder?: string;
+  onFocus?: () => void;
+  onBlur?: () => void;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  const resize = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+  useEffect(() => {
+    resize();
+  }, [value, resize]);
+  return (
+    <textarea
+      ref={ref}
+      rows={1}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={className}
+      {...props}
+    />
+  );
+}

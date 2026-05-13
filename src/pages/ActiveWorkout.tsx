@@ -387,7 +387,7 @@ function DraggableExerciseItem({ ex }: { ex: Exercise }) {
           <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
         </div>
         <div className="flex-1 min-w-0">
-          <span className="text-sm font-semibold truncate block">
+          <span className="text-sm font-semibold break-words block">
             {ex.name || "Без названия"}
           </span>
           {ex.sets.length > 0 && (

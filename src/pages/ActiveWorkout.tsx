@@ -380,12 +380,6 @@ function DraggableExerciseItem({ ex }: { ex: Exercise }) {
       whileDrag={{ scale: 1.03, boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}
     >
       <div className="p-4 flex items-center gap-3">
-        <div
-          className="cursor-grab active:cursor-grabbing touch-none p-1"
-          onPointerDown={(e) => controls.start(e)}
-        >
-          <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
-        </div>
         <div className="flex-1 min-w-0">
           <span className="text-sm font-semibold break-words block">
             {ex.name || "Без названия"}
@@ -406,6 +400,12 @@ function DraggableExerciseItem({ ex }: { ex: Exercise }) {
         {pr.weight > 0 && (
           <Trophy className="w-3.5 h-3.5 text-accent shrink-0" />
         )}
+        <div
+          className="cursor-grab active:cursor-grabbing touch-none p-1"
+          onPointerDown={(e) => controls.start(e)}
+        >
+          <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+        </div>
       </div>
     </Reorder.Item>
   );

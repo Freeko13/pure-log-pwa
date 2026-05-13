@@ -387,7 +387,7 @@ function DraggableExerciseItem({ ex }: { ex: Exercise }) {
           <GripVertical className="w-5 h-5 text-muted-foreground/50 shrink-0" />
         </div>
         <div className="flex-1 min-w-0">
-          <span className="text-sm font-semibold truncate block">
+          <span className="text-sm font-semibold break-words block">
             {ex.name || "Без названия"}
           </span>
           {ex.sets.length > 0 && (
@@ -428,12 +428,12 @@ function CompactExercise({
   return (
     <div className="p-4 flex items-start gap-3 cursor-pointer" onClick={onExpand}>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold truncate">
+        <div className="flex items-start gap-2">
+          <span className="text-sm font-semibold break-words flex-1 min-w-0">
             {ex.name || "Без названия"}
           </span>
           {pr.weight > 0 && (
-            <Trophy className="w-3.5 h-3.5 text-accent shrink-0" />
+            <Trophy className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
           )}
         </div>
 
@@ -516,11 +516,11 @@ function ExpandedExercise({
       <div className="p-4 pb-2">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
-            <Input
+            <AutoResizeTextarea
               value={ex.name}
-              onChange={(e) => onNameChange(e.target.value)}
+              onChange={(v) => onNameChange(v)}
               placeholder="Название упражнения"
-              className="h-12 text-base font-semibold bg-secondary/50 border-none rounded-xl"
+              className="w-full min-h-12 text-base font-semibold bg-secondary/50 border-none rounded-xl px-3 py-3 resize-none outline-none focus-visible:ring-2 focus-visible:ring-ring placeholder:text-muted-foreground"
               onFocus={onFocus}
               onBlur={onBlur}
             />
@@ -720,5 +720,41 @@ function ReplaceExerciseSheet({
         </div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+/* ===== Auto-resizing textarea ===== */
+function AutoResizeTextarea({
+  value,
+  onChange,
+  className,
+  ...props
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  className?: string;
+  placeholder?: string;
+  onFocus?: () => void;
+  onBlur?: () => void;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  const resize = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+  useEffect(() => {
+    resize();
+  }, [value, resize]);
+  return (
+    <textarea
+      ref={ref}
+      rows={1}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={className}
+      {...props}
+    />
   );
 }

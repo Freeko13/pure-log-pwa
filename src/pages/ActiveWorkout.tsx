@@ -428,12 +428,12 @@ function CompactExercise({
   return (
     <div className="p-4 flex items-start gap-3 cursor-pointer" onClick={onExpand}>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold truncate">
+        <div className="flex items-start gap-2">
+          <span className="text-sm font-semibold break-words flex-1 min-w-0">
             {ex.name || "Без названия"}
           </span>
           {pr.weight > 0 && (
-            <Trophy className="w-3.5 h-3.5 text-accent shrink-0" />
+            <Trophy className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
           )}
         </div>
 

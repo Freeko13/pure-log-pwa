@@ -516,11 +516,11 @@ function ExpandedExercise({
       <div className="p-4 pb-2">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
-            <Input
+            <AutoResizeTextarea
               value={ex.name}
-              onChange={(e) => onNameChange(e.target.value)}
+              onChange={(v) => onNameChange(v)}
               placeholder="Название упражнения"
-              className="h-12 text-base font-semibold bg-secondary/50 border-none rounded-xl"
+              className="w-full min-h-12 text-base font-semibold bg-secondary/50 border-none rounded-xl px-3 py-3 resize-none outline-none focus-visible:ring-2 focus-visible:ring-ring placeholder:text-muted-foreground"
               onFocus={onFocus}
               onBlur={onBlur}
             />
